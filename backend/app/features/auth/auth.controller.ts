@@ -70,31 +70,16 @@ export const register = async (req: AuthRequest, res: Response) => {
       email,
       password,
       phoneNumber,
-      userRole = UserRole.Subscriber,
       firstName,
       lastName,
     } = req.body;
-
-    if (!userName || !email || !password || !phoneNumber) {
-      return res.status(400).json({
-        success: false,
-        message: "All fields are required",
-      });
-    }
-
-    if (!verifyEmailFormat(email)) {
-      return res.status(400).json({
-        success: false,
-        message: "Email is invalid",
-      });
-    }
 
     const insertedUser = await registerService(
       userName,
       email,
       password,
       phoneNumber,
-      userRole,
+      UserRole.Subscriber,
       firstName,
       lastName,
     );

@@ -1,8 +1,10 @@
 "use client";
 
-import { getMe, login } from "@/features/auth/services/auth.service";
+import { login } from "@/features/auth/services/auth.service";
+import axios from "axios";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -11,10 +13,15 @@ export default function LoginPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const res = await login({ email, password });
-    const user = await getMe();
-    console.log(user)
-    console.log(res);
+    try {
+      const res = await login({ email, password });
+      toast.success(res.message || "Logged in successfully");
+    } catch (error) {
+      const message = axios.isAxiosError<{ message?: string }>(error)
+        ? error.response?.data?.message
+        : undefined;
+      toast.error(message ?? "Login failed. Please try again.");
+    }
   };
 
   return (
