@@ -11,5 +11,6 @@ router.post("/register", validate(registerSchema), authController.register);
 router.get("/me", verifyToken, authController.getMe);
 router.patch("/me", verifyToken, authController.getMe);
 router.patch("/me/password", verifyToken, authController.updatePassword);
+router.post("/logout", verifyToken, authController.logout);
 
 export default router;

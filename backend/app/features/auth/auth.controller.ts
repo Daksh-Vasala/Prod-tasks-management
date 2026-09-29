@@ -65,14 +65,8 @@ export const login = async (req: AuthRequest, res: Response) => {
 
 export const register = async (req: AuthRequest, res: Response) => {
   try {
-    const {
-      userName,
-      email,
-      password,
-      phoneNumber,
-      firstName,
-      lastName,
-    } = req.body;
+    const { userName, email, password, phoneNumber, firstName, lastName } =
+      req.body;
 
     const insertedUser = await registerService(
       userName,
@@ -245,6 +239,22 @@ export const updatePassword = async (req: AuthRequest, res: Response) => {
       });
     }
 
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const logout = async (req: AuthRequest, res: Response) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({
+      success: true,
+      message: "User logged out successfully",
+    });
+  } catch (error) {
+    console.error("Error in changing passowrd: ", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

@@ -1,6 +1,6 @@
 "use client";
 
-import { register } from "@/features/auth/services/auth.service";
+import { registerService } from "@/features/auth/services/auth.service";
 import { UserRole } from "@/features/auth/types/auth.types";
 import axios from "axios";
 import Link from "next/link";
@@ -21,7 +21,7 @@ export default function LoginPage() {
     e.preventDefault();
 
     try {
-      const res = await register({
+      const res = await registerService({
         userName,
         email,
         password,

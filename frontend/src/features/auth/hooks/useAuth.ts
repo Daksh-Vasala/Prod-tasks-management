@@ -1,31 +1,14 @@
-"use client"
-import { useEffect, useState } from "react";
-import { User } from "../types/auth.types";
-import { getMe } from "../services/auth.service";
+"use client";
+
+import { useContext } from "react";
+import { AuthContext } from "../components/AuthProvider";
 
 export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const auth = useContext(AuthContext);
 
-  useEffect(() => {
-    let active = true;
+  if (!auth) {
+    throw new Error("useAuth must be used within AuthProvider");
+  }
 
-    async function loadUser() {
-      try {
-        const res = await getMe();
-        console.log(res)
-        if (active) setUser(res.data);
-      } catch (error) {
-        if (active) setUser(null);
-        console.log("Error in fetching user: ", error);
-      }
-    }
-
-    void loadUser();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  return { user };
+  return auth;
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { login } from "@/features/auth/services/auth.service";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import axios from "axios";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
