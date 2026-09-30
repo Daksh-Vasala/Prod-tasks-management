@@ -7,7 +7,7 @@ import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

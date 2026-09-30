@@ -45,7 +45,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   useEffect(() => {
-    void refreshUser();
+    refreshUser();
   }, []);
 
   return (
