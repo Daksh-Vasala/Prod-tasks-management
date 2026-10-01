@@ -3,6 +3,7 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
@@ -10,12 +11,14 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const res = await login({ email, password });
+      router.replace("/tasks");
       toast.success(res.message || "Logged in successfully");
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
@@ -27,8 +30,10 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900">Sign in</h1>
+      <div className="w-full max-w-sm border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="mb-4 text-2xl font-bold text-slate-900 pb-3 text-center border-b border-zinc-200">
+          Sign in
+        </h1>
 
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
@@ -69,7 +74,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-5 flex justify-center gap-5">
+        <div className="mt-5 flex justify-center gap-5 ">
           <p className="text-sm text-slate-500">Don&apos;t have an account?</p>
           <Link href="/register" className="text-blue-700">
             Sign up
