@@ -5,7 +5,7 @@ import {
   TaskStatus,
 } from "@/features/tasks/types/tasks.types";
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface TaskAddModalProps {
   isOpen: boolean;
@@ -60,6 +60,20 @@ function TaskAddModal({
       status,
     });
   };
+
+  const resetForm = () => {
+    setErrors({});
+    setTitle("");
+    setDescription("");
+    setStatus(TaskStatus.PENDING);
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      resetForm();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -82,7 +96,7 @@ function TaskAddModal({
             type="button"
             onClick={() => {
               onClose();
-              setErrors({});
+              resetForm();
             }}
             aria-label="Close task details"
             className="rounded-md p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
@@ -166,7 +180,7 @@ function TaskAddModal({
               type="button"
               onClick={() => {
                 onClose();
-                setErrors({});
+                resetForm();
               }}
               disabled={isLoading}
               className="rounded-xl border border-zinc-400 px-4 py-2.5 text-sm font-semibold text-zinc-600 transition-all duration-200 hover:bg-zinc-100 hover:text-zinc-900 active:scale-98 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
@@ -177,7 +191,7 @@ function TaskAddModal({
             <button
               type="submit"
               disabled={isLoading}
-              className={`rounded-xl bg-indigo-600  px-5 py-2.5 text-sm font-semibold text-white shadow-indigo-500/10 transition-all duration-200 hover:bg-indigo-500 hover:shadow-indigo-500/20 active:scale-98 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
+              className={`rounded-xl bg-indigo-600 ${isLoading && "opacity-50"} px-5 py-2.5 text-sm font-semibold text-white shadow-indigo-500/10 transition-all duration-200 hover:bg-indigo-500 hover:shadow-indigo-500/20 active:scale-98 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
             >
               {isLoading ? "Saving..." : "Save"}
             </button>
