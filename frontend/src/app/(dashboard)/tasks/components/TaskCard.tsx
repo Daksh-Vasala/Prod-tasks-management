@@ -1,16 +1,50 @@
-import { Task } from "@/features/tasks/types/tasks.types";
+"use client"
+import { Task, TaskStatus } from "@/features/tasks/types/tasks.types";
 import { Edit, Trash2 } from "lucide-react";
 
-function TaskCard({ task }: { task: Task }) {
+function TaskCard({
+  task,
+  onView,
+}: {
+  task: Task;
+  onView: (task: Task) => void;
+}) {
+  const statusStyles = {
+    [TaskStatus.PENDING]: {
+      label: "Pending",
+      badge: "bg-zinc-200 text-zinc-900",
+      header: "bg-zinc-200",
+      pulse: "bg-zinc-900",
+    },
+    [TaskStatus.INPROGRESS]: {
+      label: "In progress",
+      badge: "bg-amber-200 text-amber-900",
+      header: "bg-amber-200",
+      pulse: "bg-amber-900",
+    },
+    [TaskStatus.COMPLETED]: {
+      label: "Completed",
+      badge: "bg-green-200 text-green-900",
+      header: "bg-green-200",
+      pulse: "bg-green-900",
+    },
+  };
+
+  const statusStyle = statusStyles[task.status];
+
   return (
     <div className="rounded-xl w-full bg-zinc-100 shadow-md overflow-hidden">
-      <div className="bg-amber-200 h-1"></div>
+      <div className={`${statusStyle.header} h-1`}></div>
       <div className="p-4">
         {/* Header */}
         <div className="flex justify-between">
-          <div className="bg-amber-200 rounded-full text-amber-900 cursor-pointer font-semibold px-2 h-7 flex justify-center items-center gap-1">
-            <div className="w-1 h-1 rounded-full bg-amber-800"></div>
-            <span className="text-[11px]">In progress</span>
+          <div
+            className={`${statusStyle.badge} rounded-full  cursor-pointer font-semibold px-2 h-7 flex justify-center items-center gap-1`}
+          >
+            <div
+              className={`w-1 h-1 rounded-full ${statusStyle.pulse} animate-pulse`}
+            ></div>
+            <span className="text-[11px]">{statusStyle.label}</span>
           </div>
           <div className="flex gap-2">
             <button
@@ -31,14 +65,14 @@ function TaskCard({ task }: { task: Task }) {
         {/* Main */}
         <div className="mt-2 p-2 border-b border-zinc-300">
           <h3 className="text-lg font-semibold text-zinc-900">{task.title}</h3>
-          <p className="mt-2 cursor-pointer line-clamp-2 text-sm text-gray-600">
+          <p onClick={() =>  onView(task)} className="mt-2 cursor-pointer line-clamp-2 text-sm text-gray-600">
             {task?.description}
           </p>
         </div>
 
         <div className="flex justify-between px-2 pt-3 text-xs text-zinc-500">
           <span>Created {new Date(task.createdAt).toLocaleDateString()}</span>
-          <span>Updated {new Date(task.updatedAt).toLocaleDateString()}6</span>
+          <span>Updated {new Date(task.updatedAt).toLocaleDateString()}</span>
         </div>
       </div>
     </div>

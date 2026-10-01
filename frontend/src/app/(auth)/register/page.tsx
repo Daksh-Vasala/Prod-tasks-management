@@ -14,12 +14,13 @@ export default function RegisterPage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [firstName, setFirstName] = useState<string | undefined>(undefined);
   const [lastName, setLastName] = useState<string | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    setIsLoading(true);
     try {
       const res = await registerService({
         userName,
@@ -38,13 +39,17 @@ export default function RegisterPage() {
         toast.error("Something went wrong");
         console.log("Error in registering: ", error);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-6">
-      <div className="w-full max-w-sm rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-4 text-2xl font-bold text-slate-900 border-b border-zinc-200 text-center pb-3">Sign up</h1>
+    <main className="flex min-h-screen items-center  justify-center bg-slate-50 px-6">
+      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+        <h1 className="mb-4 text-2xl font-bold text-slate-900 border-b border-zinc-200 text-center pb-3">
+          Sign up
+        </h1>
 
         <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1">
@@ -57,6 +62,7 @@ export default function RegisterPage() {
               type="text"
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="johndoe"
             />
@@ -73,6 +79,7 @@ export default function RegisterPage() {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="test@example.com"
             />
@@ -89,6 +96,7 @@ export default function RegisterPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="********"
             />
@@ -105,6 +113,7 @@ export default function RegisterPage() {
               type="text"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="9876543210"
             />
@@ -121,6 +130,7 @@ export default function RegisterPage() {
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="John"
             />
@@ -137,6 +147,7 @@ export default function RegisterPage() {
               type="text"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
+              disabled={isLoading}
               className="rounded-lg border border-zinc-300 px-2 py-1 outline-blue-400"
               placeholder="Doe"
             />
@@ -144,10 +155,11 @@ export default function RegisterPage() {
           </div>
 
           <button
-            className="cursor-pointer  rounded-lg bg-blue-500 px-2 py-1 text-white transition hover:bg-blue-600 active:bg-blue-700"
+            className="cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 rounded-lg bg-blue-500 px-2 py-1 text-white transition hover:bg-blue-600 active:bg-blue-700"
+            disabled={isLoading}
             type="submit"
           >
-            Submit
+            {isLoading ? "Creating account..." : "Submit"}
           </button>
         </form>
 

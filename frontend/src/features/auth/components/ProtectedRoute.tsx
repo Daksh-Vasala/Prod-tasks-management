@@ -13,10 +13,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     }
   }, [isLoading, user, router]);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (user === null) {
     return null;
   }

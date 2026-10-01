@@ -1,8 +1,12 @@
 import api from "@/lib/axios";
 import { TaskInput } from "../types/tasks.types";
 
-export const getAllTasksService = async () => {
-  const res = await api.get("/tasks");
+export const getAllTasksService = async (token?: string) => {
+  const res = await api.get("/tasks", {
+    headers: {
+      Cookie: token ? `token=${token}` : undefined,
+    },
+  });
 
   return res.data;
 };
