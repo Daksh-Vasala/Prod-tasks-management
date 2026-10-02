@@ -342,7 +342,7 @@ export const deleteTask = async (req: AuthRequest, res: Response) => {
   try {
     const taskId = Number(req.params.id);
 
-    if (Number.isInteger(taskId) || taskId <= 0) {
+    if (!Number.isInteger(taskId) || taskId <= 0) {
       return res.status(400).json({
         success: false,
         message: "Task id is not valid",

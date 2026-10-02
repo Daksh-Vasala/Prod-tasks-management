@@ -5,11 +5,15 @@ import { Edit, Trash2 } from "lucide-react";
 function TaskCard({
   task,
   onView,
-  onEdit
+  onEdit,
+  onDelete,
+  onStatusChange,
 }: {
   task: Task;
   onView: (task: Task) => void;
-  onEdit: (task: Task) => void
+  onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
+  onStatusChange: (status: TaskStatus, task: Task) => void;
 }) {
   const statusStyles = {
     [TaskStatus.PENDING]: {
@@ -31,7 +35,6 @@ function TaskCard({
       pulse: "bg-green-900",
     },
   };
-
   const statusStyle = statusStyles[task.status];
 
   return (
@@ -40,14 +43,21 @@ function TaskCard({
       <div className="flex flex-1 flex-col p-4">
         {/* Header */}
         <div className="flex justify-between">
-          <div
-            className={`${statusStyle.badge} rounded-full  cursor-pointer font-semibold px-2 h-7 flex justify-center items-center gap-1`}
+          <select
+            value={task.status}
+            onChange={(e) => {
+              const newStatus = e.target.value as TaskStatus;
+
+              if (newStatus === task.status) return;
+
+              onStatusChange(newStatus, task);
+            }}
+            className={`${statusStyle.badge} rounded-full cursor-pointer border-0 outline-none px-2 h-7 text-[11px] font-semibold`}
           >
-            <div
-              className={`w-1 h-1 rounded-full ${statusStyle.pulse} animate-pulse`}
-            ></div>
-            <span className="text-[11px]">{statusStyle.label}</span>
-          </div>
+            <option value={TaskStatus.PENDING}>Pending</option>
+            <option value={TaskStatus.INPROGRESS}>In progress</option>
+            <option value={TaskStatus.COMPLETED}>Completed</option>
+          </select>
           <div className="flex gap-2">
             <button
               aria-label="Edit task"
@@ -58,6 +68,7 @@ function TaskCard({
             </button>
             <button
               aria-label="Delete task"
+              onClick={() => onDelete(task)}
               className="rounded-md p-2 cursor-pointer text-red-500 transition hover:bg-red-100"
             >
               <Trash2 size={16} />

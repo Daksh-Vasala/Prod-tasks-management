@@ -254,7 +254,7 @@ export const logout = async (req: AuthRequest, res: Response) => {
       message: "User logged out successfully",
     });
   } catch (error) {
-    console.error("Error in changing passowrd: ", error);
+    console.error("Error in logging out : ", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
