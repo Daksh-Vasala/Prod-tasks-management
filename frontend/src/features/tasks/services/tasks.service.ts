@@ -1,11 +1,15 @@
 import api from "@/lib/axios";
-import { TaskInput } from "../types/tasks.types";
+import { TaskFilters, TaskInput } from "../types/tasks.types";
 
-export const getAllTasksService = async (token?: string) => {
+export const getAllTasksService = async (
+  token?: string,
+  filters?: TaskFilters,
+) => {
   const res = await api.get("/tasks", {
     headers: {
       Cookie: token ? `token=${token}` : undefined,
     },
+    params: filters,
   });
 
   return res.data;

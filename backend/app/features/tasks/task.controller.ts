@@ -162,6 +162,7 @@ export const getTasks = async (req: AuthRequest, res: Response) => {
       sortByParam &&
       sortByParam !== "title" &&
       sortByParam !== "status" &&
+      sortByParam !== "createdAt" &&
       sortByParam !== "updatedAt"
     ) {
       return res.status(400).json({
@@ -173,7 +174,7 @@ export const getTasks = async (req: AuthRequest, res: Response) => {
     if (
       sortOrderParam &&
       sortOrderParam !== "desc" &&
-      sortOrderParam === "asc"
+      sortOrderParam !== "asc"
     ) {
       return res.status(400).json({
         success: false,

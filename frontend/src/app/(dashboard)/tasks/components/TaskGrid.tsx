@@ -1,6 +1,10 @@
 "use client";
-import { Task, TaskStatus } from "@/features/tasks/types/tasks.types";
-import { useState } from "react";
+import {
+  Task,
+  TaskPagination,
+  TaskStatus,
+} from "@/features/tasks/types/tasks.types";
+import { useEffect, useState } from "react";
 import TaskCard from "./TaskCard";
 import TaskViewModal from "./TaskViewModal";
 import {
@@ -11,6 +15,7 @@ import {
 import { toast } from "sonner";
 import TaskFormModal from "./TaskFormModal";
 import ConfirmationModal from "@/components/ConfirmationModal";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface TaskInput {
   title: string;
@@ -25,7 +30,13 @@ type ConfirmationConfig = {
   onConfirm: () => void | Promise<void>;
 };
 
-function TaskGrid({ initialTasks }: { initialTasks: Task[] }) {
+function TaskGrid({
+  initialTasks,
+  pagination,
+}: {
+  initialTasks: Task[];
+  pagination: TaskPagination;
+}) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [isOpenViewModal, setIsOpenViewModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -35,6 +46,15 @@ function TaskGrid({ initialTasks }: { initialTasks: Task[] }) {
   const [confirmation, setConfirmation] = useState<boolean>(false);
   const [confirmationConfig, setConfirmationConfig] =
     useState<ConfirmationConfig>();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentStatus = searchParams.get("status") ?? "all";
+
+  const sortBy = searchParams.get("sortBy");
+  const sortOrder = searchParams.get("sortOrder");
+
+  const currentSort =
+    sortBy && sortOrder ? `${sortBy}-${sortOrder}` : "default";
 
   const onView = (task: Task) => {
     setSelectedTask(task);
@@ -136,42 +156,164 @@ function TaskGrid({ initialTasks }: { initialTasks: Task[] }) {
     }
   };
 
+  const handlePage = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("page", page.toString());
+
+    router.push(`/tasks?${params.toString()}`);
+  };
+
+  useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
+
   return (
     <>
       <div className="pt-6">
         {/* Header */}
-        <div className="flex justify-between">
-          <p className="text-3xl font-semibold">Tasks</p>
+        <div className="">
+          <div className="flex justify-between">
+            <p className="text-3xl font-semibold">Tasks</p>
+            <div className="flex gap-2 sm:gap-4 justify-center items-center">
+              <span className="border rounded-full border-zinc-600 text-[12px] font-semibold px-2 py-1">
+                {tasks.length > 0
+                  ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}`
+                  : "No tasks"}
+              </span>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setIsOpenAddModal(true);
+                }}
+                className="bg-blue-500 rounded-full text-white px-2 py-1 cursor-pointer text-sm pl-3"
+              >
+                + New task
+              </button>
+            </div>
+          </div>
 
-          <div className="flex gap-2 sm:gap-4 justify-center items-center">
-            <span className="border rounded-full border-zinc-600 text-[12px] font-semibold px-2 py-1">
-              {tasks.length > 0
-                ? `${tasks.length} task${tasks.length > 1 ? "s" : ""}`
-                : "No tasks"}
-            </span>
-            <button
-              onClick={() => {
-                setIsEditing(false);
-                setIsOpenAddModal(true);
-              }}
-              className="bg-blue-500 rounded-full text-white px-2 py-1 cursor-pointer text-sm pl-3"
-            >
-              + New task
-            </button>
+          <div className="flex flex-col sm:flex-row justify-start gap-2">
+            {/* Filtering */}
+            <div className="mt-2 flex items-center gap-3 ">
+              <label
+                htmlFor="status-filter"
+                className="text-sm font-medium text-zinc-600"
+              >
+                Filter:
+              </label>
+
+              <select
+                id="status-filter"
+                className="cursor-pointer rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 outline-none transition focus:border-zinc-500"
+                value={currentStatus}
+                onChange={(e) => {
+                  const status = e.target.value;
+
+                  const params = new URLSearchParams(searchParams.toString());
+
+                  if (status === "all") {
+                    params.delete("status");
+                  } else {
+                    params.set("status", status);
+                  }
+                  params.set("page", "1");
+
+                  router.push(`/tasks?${params.toString()}`);
+                }}
+              >
+                <option value="all">All statuses</option>
+                <option value={TaskStatus.PENDING}>Pending</option>
+                <option value={TaskStatus.INPROGRESS}>In progress</option>
+                <option value={TaskStatus.COMPLETED}>Completed</option>
+              </select>
+            </div>
+
+            {/* Sorting */}
+            <div className="mt-2 flex items-center gap-3">
+              <label
+                htmlFor="sort-filter"
+                className="text-sm font-medium text-zinc-600"
+              >
+                Sort:
+              </label>
+
+              <select
+                id="sort-filter"
+                className="cursor-pointer rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-700 outline-none transition focus:border-zinc-500"
+                value={currentSort}
+                onChange={(e) => {
+                  const sort = e.target.value;
+
+                  const params = new URLSearchParams(searchParams.toString());
+
+                  if (sort === "default") {
+                    params.delete("sortBy");
+                    params.delete("sortOrder");
+                  } else {
+                    const [sortBy, sortOrder] = sort.split("-");
+                    params.set("sortBy", sortBy);
+                    params.set("sortOrder", sortOrder);
+                  }
+
+                  params.set("page", "1");
+
+                  router.push(`/tasks?${params.toString()}`);
+                }}
+              >
+                <option value="default">Default</option>
+                <option value="createdAt-desc">Newest first</option>
+                <option value="createdAt-asc">Oldest first</option>
+                <option value="updatedAt-desc">Recently updated</option>
+                <option value="updatedAt-asc">Least recently updated</option>
+                <option value="title-asc">Title A–Z</option>
+                <option value="title-desc">Title Z–A</option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {tasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            onEdit={onEdit}
-            onView={onView}
-            onDelete={handleDeleteClick}
-            onStatusChange={handleStatusChange}
-          />
-        ))}
+
+        {/* Task grid */}
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onEdit={onEdit}
+              onView={onView}
+              onDelete={handleDeleteClick}
+              onStatusChange={handleStatusChange}
+            />
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {pagination.total > 0 &&
+          (pagination.hasPreviousPage || pagination.hasNextPage) && (
+            <div className="sticky bottom-0 z-10 flex items-center justify-center gap-3 border-t border-zinc-200 bg-white/90 px-4 py-4 backdrop-blur-sm">
+              <button
+                type="button"
+                disabled={!pagination.hasPreviousPage}
+                className="cursor-pointer rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+                onClick={() => handlePage(pagination.page - 1)}
+              >
+                ← Previous
+              </button>
+
+              <span className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white">
+                Page {pagination.page} of {pagination.totalPages}
+              </span>
+
+              <button
+                type="button"
+                disabled={!pagination.hasNextPage}
+                className="cursor-pointer rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white"
+                onClick={() => handlePage(pagination.page + 1)}
+              >
+                Next →
+              </button>
+            </div>
+          )}
       </div>
       <TaskViewModal
         isOpen={isOpenViewModal}
