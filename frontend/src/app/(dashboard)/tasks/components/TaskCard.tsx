@@ -1,13 +1,15 @@
-"use client"
+"use client";
 import { Task, TaskStatus } from "@/features/tasks/types/tasks.types";
 import { Edit, Trash2 } from "lucide-react";
 
 function TaskCard({
   task,
   onView,
+  onEdit
 }: {
   task: Task;
   onView: (task: Task) => void;
+  onEdit: (task: Task) => void
 }) {
   const statusStyles = {
     [TaskStatus.PENDING]: {
@@ -33,9 +35,9 @@ function TaskCard({
   const statusStyle = statusStyles[task.status];
 
   return (
-    <div className="rounded-xl w-full bg-zinc-100 shadow-md overflow-hidden">
+    <div className="flex h-full w-full flex-col rounded-xl bg-zinc-100 shadow-md overflow-hidden">
       <div className={`${statusStyle.header} h-1`}></div>
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         {/* Header */}
         <div className="flex justify-between">
           <div
@@ -49,6 +51,7 @@ function TaskCard({
           <div className="flex gap-2">
             <button
               aria-label="Edit task"
+              onClick={() => onEdit(task)}
               className="rounded-md p-2 cursor-pointer text-blue-500 transition hover:bg-blue-100"
             >
               <Edit size={16} />
@@ -63,16 +66,19 @@ function TaskCard({
         </div>
 
         {/* Main */}
-        <div className="mt-2 p-2 border-b border-zinc-300">
+        <div className="mt-2 flex-1 border-b border-zinc-300 p-2">
           <h3 className="text-lg font-semibold text-zinc-900">{task.title}</h3>
-          <p onClick={() =>  onView(task)} className="mt-2 cursor-pointer line-clamp-2 text-sm text-gray-600">
+          <p
+            onClick={() => onView(task)}
+            className="mt-2 cursor-pointer line-clamp-2 text-sm text-gray-600"
+          >
             {task?.description}
           </p>
         </div>
 
-        <div className="flex justify-between px-2 pt-3 text-xs text-zinc-500">
-          <span>Created {new Date(task.createdAt).toLocaleDateString()}</span>
-          <span>Updated {new Date(task.updatedAt).toLocaleDateString()}</span>
+        <div className="mt-auto flex justify-between px-2 pt-3 text-xs text-zinc-500">
+          <span>Created {task.createdAt.toLocaleString()}</span>
+          <span>Updated {task.updatedAt.toLocaleString()}</span>
         </div>
       </div>
     </div>

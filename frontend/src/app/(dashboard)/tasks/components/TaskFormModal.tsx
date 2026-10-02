@@ -10,15 +10,19 @@ import React, { useEffect, useState } from "react";
 interface TaskAddModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: TaskInput) => void;
+  onSubmit: (data: TaskInput) => Promise<void>;
   isLoading: boolean;
+  isEditing: boolean;
+  selectedTask: Task | null;
 }
 
-function TaskAddModal({
+function TaskFormModal({
   isOpen,
   onClose,
   onSubmit,
   isLoading,
+  isEditing,
+  selectedTask,
 }: TaskAddModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -70,9 +74,14 @@ function TaskAddModal({
 
   useEffect(() => {
     if (!isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       resetForm();
+      return;
     }
-  }, [isOpen]);
+    setTitle(selectedTask?.title ?? "");
+    setDescription(selectedTask?.description ?? "");
+    setStatus(selectedTask?.status ?? TaskStatus.PENDING);
+  }, [isOpen, selectedTask]);
 
   if (!isOpen) return null;
 
@@ -88,18 +97,15 @@ function TaskAddModal({
         <div className="flex items-start justify-between border-b border-zinc-200 pb-4">
           <div>
             <h2 className="mt-1 text-xl font-semibold text-zinc-900">
-              Add task
+              {isEditing ? "Edit task" : "Add task"}
             </h2>
           </div>
 
           <button
             type="button"
-            onClick={() => {
-              onClose();
-              resetForm();
-            }}
+            onClick={onClose}
             aria-label="Close task details"
-            className="rounded-md p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+            className="cursor-pointer rounded-md p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
           >
             <X size={18} />
           </button>
@@ -178,10 +184,7 @@ function TaskAddModal({
           <div className="mt-6 flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => {
-                onClose();
-                resetForm();
-              }}
+              onClick={() => onClose()}
               disabled={isLoading}
               className="rounded-xl border border-zinc-400 px-4 py-2.5 text-sm font-semibold text-zinc-600 transition-all duration-200 hover:bg-zinc-100 hover:text-zinc-900 active:scale-98 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
             >
@@ -193,7 +196,13 @@ function TaskAddModal({
               disabled={isLoading}
               className={`rounded-xl bg-indigo-600 ${isLoading && "opacity-50"} px-5 py-2.5 text-sm font-semibold text-white shadow-indigo-500/10 transition-all duration-200 hover:bg-indigo-500 hover:shadow-indigo-500/20 active:scale-98 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}
             >
-              {isLoading ? "Saving..." : "Save"}
+              {isEditing
+                ? isLoading
+                  ? "Saving changes..."
+                  : "Save changes"
+                : isLoading
+                  ? "Saving..."
+                  : "Save"}
             </button>
           </div>
         </form>
@@ -202,4 +211,4 @@ function TaskAddModal({
   );
 }
 
-export default TaskAddModal;
+export default TaskFormModal;

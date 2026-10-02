@@ -8,11 +8,7 @@ interface TaskViewModalProps {
   onClose: () => void;
 }
 
-function TaskViewModal({
-  task,
-  isOpen,
-  onClose,
-}: TaskViewModalProps) {
+function TaskViewModal({ task, isOpen, onClose }: TaskViewModalProps) {
   if (!isOpen || !task) return null;
 
   return (
@@ -36,7 +32,7 @@ function TaskViewModal({
             type="button"
             onClick={onClose}
             aria-label="Close task details"
-            className="rounded-md p-2 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+            className="rounded-md p-2 cursor-pointer text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
           >
             <X size={18} />
           </button>
@@ -78,7 +74,7 @@ function TaskViewModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700"
+            className="rounded-lg cursor-pointer bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700"
           >
             Close
           </button>

@@ -14,6 +14,7 @@ export default async function TasksPage() {
     const res = await getAllTasksService(token);
     tasks = res.data;
   } catch (error) {
+    console.log(error)
     redirect("/login");
   }
 
