@@ -60,7 +60,7 @@ export const isAdmin = (
   try {
     if (req.userRole !== UserRole.Admin) {
       return res.status(403).json({
-        status: false,
+        success: false,
         message: "Forbidden: Admins only",
       });
     }
@@ -70,8 +70,8 @@ export const isAdmin = (
     console.error("Error during admin role verification: ", error);
 
     return res.status(500).json({
-      status: false,
-      message: error instanceof Error ? error.message : "Internal server error",
+      success: false,
+      message: "Internal server error",
     });
   }
 };
