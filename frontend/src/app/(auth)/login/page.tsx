@@ -20,7 +20,7 @@ export default function LoginPage() {
       setIsLoading(true);
       const res = await login({ email, password });
       toast.success(res.message || "Logged in successfully");
-      router.replace("/tasks");
+      router.replace("/dashboard");
     } catch (error) {
       const message = axios.isAxiosError<{ message?: string }>(error)
         ? error.response?.data?.message

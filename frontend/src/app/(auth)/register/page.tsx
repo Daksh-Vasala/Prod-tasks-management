@@ -4,6 +4,7 @@ import { registerService } from "@/features/auth/services/auth.service";
 import { UserRole } from "@/features/auth/types/auth.types";
 import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
@@ -17,6 +18,7 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,6 +34,7 @@ export default function RegisterPage() {
         lastName,
       });
       toast.success(res.message || "Registration successful");
+      router.replace("/login");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setErrors(error.response?.data?.errors ?? {});

@@ -1,0 +1,23 @@
+import AdminRoute from "@/features/auth/components/AdminRoute";
+import { getDashboardStatsService } from "@/features/dashboard/services/dashboard.service";
+import { cookies, headers } from "next/headers";
+import DashboardCards from "./components/DashboardCards";
+
+export default async function DashboardPage() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  const res = await getDashboardStatsService(token);
+
+  console.log(res);
+  return (
+    <AdminRoute>
+      <main className="px-4 pt-6 sm:px-10 lg:px-20">
+        <h1 className="text-2xl font-semibold text-zinc-900 mb-4">
+          Admin Dashboard
+        </h1>
+        <DashboardCards stats={res.data} />
+      </main>
+    </AdminRoute>
+  );
+}
