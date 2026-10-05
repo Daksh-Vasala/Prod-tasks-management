@@ -18,9 +18,19 @@ export const registerService = async (data: RegisterInput) => {
   return res.data;
 };
 
-export const getMeService = async () => {
-  const res = await api.get<ApiResponse<User>>("/auth/me");
+export const getMeService = async (token?: string) => {
+  if (token) {
+    const res = await api.get<ApiResponse<User>>("/auth/me", {
+      headers: {
+        Cookie: token ? `token=${token}` : undefined,
+      },
+    });
 
+    return res.data;
+  }
+  
+  const res = await api.get<ApiResponse<User>>("/auth/me");
+  
   return res.data;
 };
 

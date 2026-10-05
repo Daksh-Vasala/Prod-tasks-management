@@ -40,7 +40,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   async function logout() {
     const res = await logoutService();
-    setUser(null)
+    setUser(null);
     return res;
   }
 

@@ -14,7 +14,7 @@ export default function AdminRoute({
 
   useEffect(() => {
     if (!isLoading && user === null) {
-      router.replace(".login");
+      router.replace("/login");
       return;
     }
 
@@ -23,9 +23,9 @@ export default function AdminRoute({
     }
   }, [user, isLoading, router]);
 
-  if (isLoading) {
-    return <h3 className="text-center text-lg font-semibold">Loading...</h3>;
-  }
+  // if (isLoading) {
+  //   return <h3 className="text-center text-lg font-semibold">Loading...</h3>;
+  // }
 
   if (!user || user.userRole !== UserRole.ADMIN) {
     return null;

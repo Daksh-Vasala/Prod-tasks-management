@@ -11,6 +11,7 @@ const userColumns = {
   phoneNumber: users.phoneNumber,
   firstName: users.firstName,
   lastName: users.lastName,
+  userRole: users.userRole,
   isActive: users.isActive,
   createdAt: users.createdAt,
   updatedAt: users.updatedAt,
