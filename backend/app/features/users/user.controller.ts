@@ -2,6 +2,7 @@ import { UserRole } from "@/app/types/auth.types";
 import { AuthRequest } from "@/app/types/express.types";
 import { Response } from "express";
 import {
+  activateUserService,
   deactivateUserService,
   getAllUsersService,
   getUserByIdService,
@@ -154,6 +155,42 @@ export const deactivateUser = async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     console.log("Error in deactivating user: ", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+export const activateUser = async (req: AuthRequest, res: Response) => {
+  try {
+    const userIdParams = req.params.id;
+    const userId = Number(userIdParams);
+
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user id",
+      });
+    }
+
+    const activatedUser = await activateUserService(userId);
+
+    if (!activatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User activated successfully",
+      data: activateUser,
+    });
+  } catch (error) {
+    console.log("Error in activating user: ", error);
 
     res.status(500).json({
       success: false,

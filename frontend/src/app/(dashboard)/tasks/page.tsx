@@ -16,15 +16,6 @@ export default async function TasksPage({
     sortOrder?: string;
   }>;
 }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  let tasks;
-  let pagination;
-
-  if (!token) {
-    redirect("/login");
-  }
-
   const params = await searchParams;
 
   const filters = {
@@ -36,18 +27,23 @@ export default async function TasksPage({
     sortOrder: params.sortOrder as TaskFilters["sortOrder"],
   };
 
-  try {
-    const res = await getAllTasksService(token, filters);
-    tasks = res.data;
-    pagination = res.pagination;
-  } catch (error) {
-    console.log(error);
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  if (!token) {
     redirect("/login");
   }
 
-  return (
-    <main className="lg:px-20 sm:px-10 pt-1 px-4 ">
-      <TaskGrid initialTasks={tasks} pagination={pagination} />
-    </main>
-  );
+  try {
+    const res = await getAllTasksService(token, filters);
+
+    return (
+      <main className="px-4 pt-1 sm:px-10 lg:px-20">
+        <TaskGrid initialTasks={res.data} pagination={res.pagination} />
+      </main>
+    );
+  } catch (error) {
+    console.error("Failed to fetch tasks:", error);
+    redirect("/login");
+  }
 }

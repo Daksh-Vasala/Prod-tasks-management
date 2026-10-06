@@ -12,36 +12,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import ConfirmationModal from "./ConfirmationModal";
-import useAuth from "@/practice/auth/useAuth";
-
-const navItems = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    label: "Tasks",
-    href: "/tasks",
-    icon: CheckSquare,
-  },
-  {
-    label: "Users",
-    href: "/dashboard/users",
-    icon: Users,
-  },
-  {
-    label: "Profile",
-    href: "/profile",
-    icon: User,
-  },
-];
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { UserRole } from "@/features/auth/types/auth.types";
 
 export default function Navbar() {
   const [confirmation, setConfirmation] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -62,6 +40,46 @@ export default function Navbar() {
       setIsLoggingOut(false);
     }
   };
+
+  let navItems = [];
+
+  if (user?.userRole === UserRole.ADMIN) {
+    navItems = [
+      {
+        label: "Dashboard",
+        href: "/dashboard",
+        icon: LayoutDashboard,
+      },
+      {
+        label: "Tasks",
+        href: "/tasks",
+        icon: CheckSquare,
+      },
+      {
+        label: "Users",
+        href: "/dashboard/users",
+        icon: Users,
+      },
+      {
+        label: "Profile",
+        href: "/profile",
+        icon: User,
+      },
+    ];
+  } else {
+    navItems = [
+      {
+        label: "Tasks",
+        href: "/tasks",
+        icon: CheckSquare,
+      },
+      {
+        label: "Profile",
+        href: "/profile",
+        icon: User,
+      },
+    ];
+  }
 
   return (
     <>

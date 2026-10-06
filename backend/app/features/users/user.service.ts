@@ -96,3 +96,15 @@ export const deactivateUserService = async (userId: number) => {
 
   return user;
 };
+
+export const activateUserService = async (userId: number) => {
+  const [user] = await db
+    .update(users)
+    .set({
+      isActive: true,
+    })
+    .where(and(eq(users.id, userId), eq(users.isActive, false)))
+    .returning(userColumns);
+
+  return user;
+};

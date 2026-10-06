@@ -8,6 +8,7 @@ import {
   UserX,
 } from "lucide-react";
 import { User } from "@/features/users/types/users.types";
+import UserActions from "./UserActions";
 
 interface UsersTableProps {
   users: User[];
@@ -109,28 +110,7 @@ export default function UsersTable({ users }: UsersTableProps) {
 
                   {/* Action Buttons Cell */}
                   <td className="px-6 py-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        aria-label="Edit user"
-                        className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-900 active:bg-zinc-200"
-                        title="Edit"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Delete user"
-                        className={`rounded-lg p-2 ${!user.isActive ? "hover:bg-blue-50 hover:text-blue-600 active:bg-blue-100" : "hover:bg-red-50 hover:text-red-600 active:bg-red-100"} text-zinc-400 transition-all`}
-                        title={`${user.isActive ? "Deactivate" : "Activate"}`}
-                      >
-                        {user.isActive ? (
-                          <UserX size={16} />
-                        ) : (
-                          <UserCheck size={16} />
-                        )}
-                      </button>
-                    </div>
+                    <UserActions userId={user.id} isActive={user.isActive} user={user} />
                   </td>
                 </tr>
               );
@@ -195,20 +175,7 @@ export default function UsersTable({ users }: UsersTableProps) {
                 </span>
 
                 <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    aria-label="Edit user"
-                    className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 active:bg-zinc-200"
-                  >
-                    <Edit size={18} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Delete user"
-                    className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-red-50 hover:text-red-600 active:bg-red-100"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  {/* <UserActions userId={user.id} isActive={user.isActive}  /> */}
                 </div>
               </div>
             </div>

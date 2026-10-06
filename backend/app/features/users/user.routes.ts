@@ -1,6 +1,7 @@
 import { isAdmin, verifyToken } from "@/app/middlewares/auth.middleware";
 import express from "express";
 import {
+  activateUser,
   deactivateUser,
   getAllUsers,
   getUserById,
@@ -19,6 +20,8 @@ router.get("/:id", getUserById);
 
 router.patch("/:id", validate(updateUserSchema), updateUser);
 
-router.delete("/:id", isAdmin, deactivateUser);
+router.delete("/:id/deactivate", isAdmin, deactivateUser);
+
+router.delete("/:id/activate", isAdmin, activateUser);
 
 export default router;

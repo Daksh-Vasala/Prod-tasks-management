@@ -16,7 +16,7 @@ function SkeletonCard() {
 
 export default function Loading() {
   return (
-    <div className="animate-pulse space-y-6">
+    <div className="animate-pulse p-8 mt-10">
       <div className={gridClass}>
         {Array.from({ length: 3 }).map((_, i) => (
           <SkeletonCard key={i} />

@@ -32,13 +32,11 @@ export default async function DashboardPage() {
   const res = await getDashboardStatsService(token);
 
   return (
-    <AdminRoute>
-      <main className="px-4 pt-6 sm:px-10 lg:px-20">
-        <h1 className="text-2xl font-semibold text-zinc-900 mb-4">
-          Admin Dashboard
-        </h1>
-        <DashboardCards stats={res.data} />
-      </main>
-    </AdminRoute>
+    <main className="px-4 pt-6 sm:px-10 lg:px-20">
+      <h1 className="text-2xl font-semibold text-zinc-900 mb-4">
+        Admin Dashboard
+      </h1>
+      <DashboardCards stats={res.data} />
+    </main>
   );
 }
