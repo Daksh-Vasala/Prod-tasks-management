@@ -34,16 +34,18 @@ export default async function TasksPage({
     redirect("/login");
   }
 
-  try {
-    const res = await getAllTasksService(token, filters);
+  let res;
 
-    return (
-      <main className="px-4 pt-1 sm:px-10 lg:px-20">
-        <TaskGrid initialTasks={res.data} pagination={res.pagination} />
-      </main>
-    );
+  try {
+    res = await getAllTasksService(token, filters);
   } catch (error) {
     console.error("Failed to fetch tasks:", error);
     redirect("/login");
   }
+
+  return (
+    <main className="px-4 pt-1 sm:px-10 lg:px-20">
+      <TaskGrid initialTasks={res.data} pagination={res.pagination} />
+    </main>
+  );
 }

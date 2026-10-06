@@ -75,13 +75,13 @@ export default function ViewUserModal({
           <div className="flex items-center justify-between gap-4 py-4">
             <dt className="text-sm font-medium text-zinc-500">First name</dt>
             <dd className="text-right text-sm text-zinc-800">
-              {user.firstName}
+              {user.firstName ?? "---"}
             </dd>
           </div>
           <div className="flex items-center justify-between gap-4 py-4">
             <dt className="text-sm font-medium text-zinc-500">Last name</dt>
             <dd className="text-right text-sm text-zinc-800">
-              {user.lastName}
+              {user.lastName ?? "---"}
             </dd>
           </div>
 

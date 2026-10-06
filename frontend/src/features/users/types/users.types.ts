@@ -5,8 +5,16 @@ export interface User {
   userName: string;
   email: string;
   phoneNumber: string;
-  userRole: UserRole
+  userRole: UserRole;
   isActive: boolean;
-  firstName?: string;
-  lastName?: string;
+  firstName?: string | null;
+  lastName?: string | null;
+}
+
+export interface UpdateUserInput {
+  userName?: string;
+  email?: string;
+  phoneNumber?: string;
+  firstName?: string | null;
+  lastName?: string | null;
 }
